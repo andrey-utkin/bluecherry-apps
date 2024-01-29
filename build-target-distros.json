@@ -1,0 +1,8 @@
+{"distro": "debian", "release": "10", "codename": "buster"}
+{"distro": "debian", "release": "11", "codename": "bullseye"}
+{"distro": "debian", "release": "12", "codename": "bookworm"}
+{"distro": "ubuntu", "release": "18.04", "codename": "bionic"}
+{"distro": "ubuntu", "release": "20.04", "codename": "focal"}
+{"distro": "ubuntu", "release": "22.04", "codename": "jammy"}
+{"distro": "ubuntu", "release": "23.04", "codename": "lunar"}
+{"distro": "ubuntu", "release": "23.10", "codename": "mantic"}
