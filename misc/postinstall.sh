@@ -352,6 +352,16 @@ case "$1" in
 
 		fi # Whether there was an upgrade or fresh install
 
+		if ! /usr/share/bluecherry/compare.sh >&2
+		then
+			echo "Loaded database scheme missmatch. Please load it manualy or restore from backup"
+			if [[ -s "$DB_BACKUP_GZ_FILE" ]]
+			then
+				restore_mysql_backup "$dbname" "$user" "$password" "$host"
+			fi
+			exit 1
+		fi
+
 		# database successfully upgraded
 		if [[ -f "$DB_BACKUP_GZ_FILE" ]]
 		then
