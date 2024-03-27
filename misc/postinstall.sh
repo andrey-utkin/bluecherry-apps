@@ -354,7 +354,7 @@ case "$1" in
 
 		if ! /usr/share/bluecherry/compare.sh >&2
 		then
-			echo "Loaded database scheme missmatch. Please load it manualy or restore from backup"
+			echo "Database schema doesn't match the intended after the upgrade. Fix or restore from backup."
 			if [[ -s "$DB_BACKUP_GZ_FILE" ]]
 			then
 				restore_mysql_backup "$dbname" "$user" "$password" "$host"
