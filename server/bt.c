@@ -102,7 +102,7 @@ void bt(const char *err, const void *ptr)
 	// Same again, but enriched using glibc backtrace_symbols()
 	int nptrs = size; // as named in manpage example
 	char **strings;
-	strings = backtrace_symbols(buffer, nptrs);
+	strings = backtrace_symbols(btrace, nptrs);
 	if (strings != NULL) {
 		for (size_t j = 0; j < nptrs; j++) {
 			const unsigned logv_len = 1;
