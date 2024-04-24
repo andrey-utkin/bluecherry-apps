@@ -27,6 +27,7 @@
 #include <signal.h>
 #include <limits.h>
 #include <dirent.h>
+#include <assert.h>
 
 extern "C" {
 #include <libavutil/log.h>
@@ -1578,6 +1579,10 @@ int main(int argc, char **argv)
 	int hwcard_down_reported = 0;
 
 	bc_syslog_init();
+
+	std::string boo = "boo";
+	char tmp[boo.length()-6];
+	assert(tmp == boo);
 
 	umask(007);
 
