@@ -1580,10 +1580,6 @@ int main(int argc, char **argv)
 
 	bc_syslog_init();
 
-	std::string boo = "boo";
-	char tmp[boo.length()-6];
-	abort();
-
 	umask(007);
 
 	while ((opt = getopt(argc, argv, "hsm:r:u:g:l:f:")) != -1) {
@@ -1749,6 +1745,11 @@ int main(int argc, char **argv)
 	pthread_t v3license_thread;
 	pthread_create(&v3license_thread, NULL, v3license_server::runThread, v3license);
 #endif /* V3_LICENSING */
+
+
+	std::string boo = "boo";
+	char tmp[boo.length()-6];
+	abort();
 
 	/* Main loop */
 	for (unsigned int loops = 0 ;; sleep(1), loops++) {
