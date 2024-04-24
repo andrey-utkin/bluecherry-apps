@@ -16,7 +16,7 @@ RELEASE_NAME := $(shell ./scripts/build_helper/get_distro_release_name.sh)
 override_dh_strip:
 	# dh_strip --dbg-package=bluecherry-dbg
 	# or use as a workaround:
-	dh_strip --keep-debug
+	# dh_strip --keep-debug
 	# or to move forward:
 	# dh_strip --dbgsym-mitration=bluecherry-dbg
 
