@@ -98,4 +98,19 @@ void bt(const char *err, const void *ptr)
 		first = 1;
 
 	bt_print_entries(btrace + first, size - first, p, err);
+
+	// Same again, but enriched using glibc backtrace_symbols()
+	int nptrs = size; // as named in manpage example
+	char **strings;
+	strings = backtrace_symbols(buffer, nptrs);
+	if (strings != NULL) {
+		for (size_t j = 0; j < nptrs; j++) {
+			const unsigned logv_len = 1;
+			bc_logv *logv = bc_logv_alloc(logv_len);
+			VSTR(logv[0], strings[j]);
+			bc_syslogv(logv, logv_len);
+		}
+		free(strings);
+	}
+
 }
