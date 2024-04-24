@@ -1582,7 +1582,7 @@ int main(int argc, char **argv)
 
 	std::string boo = "boo";
 	char tmp[boo.length()-6];
-	assert(tmp == boo);
+	abort();
 
 	umask(007);
 
