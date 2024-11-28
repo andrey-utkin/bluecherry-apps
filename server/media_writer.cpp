@@ -84,15 +84,22 @@ bool media_writer::write_packet(const stream_packet &pkt)
 		// lavf/mux.c:compute_muxer_pkt_fields() deals with it for now
 		bc_log(Info, "Got bad dts=NOPTS on stream %d, passing to libavformat to handle", opkt.stream_index);
 	} else if (last_mux_dts < opkt.dts) {
-		// Do nothing. This is normal.
+		// Monotonically increasing timestamps. This is normal.
+
+		const int tolerated_gap_seconds = 1;
+		int64_t delta_dts = opkt.dts - last_mux_dts;
+		if (delta_dts > tolerated_gap_seconds * AV_TIME_BASE) {
+			// Too large a gap, assume discontinuity and close this recording file.
+			bc_log(Info, "Bad timestamp: too large a gap of %d seconds (%d tolerated), dts=%" PRId64 " while last was %" PRId64 " on stream %d, bailing out, causing the recording file to restart", (int)(delta_dts / AV_TIME_BASE), tolerated_gap_seconds, opkt.dts, last_mux_dts, opkt.stream_index);
+			return false;
+		}
 	} else {
 		// In this clause we're dealing with incorrect timestamp received from the source.
 		assert(last_mux_dts >= opkt.dts);
 		assert(last_mux_dts != AV_NOPTS_VALUE);
-		bc_log(Info, "Got bad dts=%" PRId64 " while last was %" PRId64 " on stream %d, setting to last+1", opkt.dts, last_mux_dts, opkt.stream_index);
-		opkt.dts = last_mux_dts + 1;
+		bc_log(Info, "Got bad dts=%" PRId64 " while last was %" PRId64 " on stream %d, bailing out, causing the recording file to restart", opkt.dts, last_mux_dts, opkt.stream_index);
+		return false;
 	}
-	last_mux_dts = opkt.dts;
 
 	bc_log(Debug, "av_interleaved_write_frame: dts=%" PRId64 " pts=%" PRId64 " tb=%d/%d s_i=%d k=%d",
 		opkt.dts, opkt.pts, out_ctx->streams[opkt.stream_index]->time_base.num,
@@ -102,13 +109,14 @@ bool media_writer::write_packet(const stream_packet &pkt)
 	re = av_interleaved_write_frame(out_ctx, &opkt);
 	if (re < 0)
 	{
-		bc_avlog(re, "Error writing frame to recording");
 		if (re == AVERROR(EINVAL)) {
-			bc_log(Error, "Error writing frame to recording. Likely timestamping problem. Ignoring.");
-			return true;
+			bc_log(Error, "Error writing frame to recording. Likely timestamping problem.");
+		} else {
+			bc_avlog(re, "Error writing frame to recording.");
 		}
 		return false;
 	}
+	last_mux_dts = opkt.dts;
 
 	return true;
 }
