@@ -124,6 +124,9 @@ bool media_writer::write_packet(const stream_packet &pkt)
 void media_writer::close()
 {
 	video_st = audio_st = NULL;
+	for (int i = 0; i < sizeof(last_mux_dts)/sizeof(last_mux_dts[0]); i++) {
+		last_mux_dts[i] = 0;
+	}
 
 	if (out_ctx)
 	{
