@@ -78,13 +78,14 @@ bool media_writer::write_packet(const stream_packet &pkt)
 	static_assert(AVMEDIA_TYPE_VIDEO == 0);
 	static_assert(AVMEDIA_TYPE_AUDIO == 1);
 	int64_t &last_mux_dts = this->last_mux_dts[pkt.type];
+	bool update_last_mux_dts = true;
 	if (opkt.dts == AV_NOPTS_VALUE) {
 		// Do nothing.
 		// In ffmpeg, ffmpeg_mux.c:write_packet() does nothing and
 		// lavf/mux.c:compute_muxer_pkt_fields() deals with it for now
 		bc_log(Info, "Got bad dts=NOPTS on stream %d, passing to libavformat to handle", opkt.stream_index);
+		update_last_mux_dts = false;
 	} else if (last_mux_dts == AV_NOPTS_VALUE) {
-		last_mux_dts = opkt.dts;
 		// First packet ever. Initialize last_mux_dts and move on.
 	} else if (last_mux_dts < opkt.dts) {
 		// Monotonically increasing timestamps. This is normal.
@@ -119,7 +120,9 @@ bool media_writer::write_packet(const stream_packet &pkt)
 		}
 		return false;
 	}
-	last_mux_dts = opkt.dts;
+	if (update_last_mux_dts) {
+		last_mux_dts = opkt.dts;
+	}
 
 	return true;
 }
