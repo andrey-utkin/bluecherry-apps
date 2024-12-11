@@ -110,6 +110,7 @@ bool media_writer::write_packet(const stream_packet &pkt)
 		out_ctx->streams[opkt.stream_index]->time_base.den, opkt.stream_index,
 		!!(opkt.flags & AV_PKT_FLAG_KEY));
 
+	auto last_mux_dts_uncommitted = opkt.dts; // opkt.dts is lost as av_interleaved_write_frame() frees opkt
 	re = av_interleaved_write_frame(out_ctx, &opkt);
 	if (re < 0)
 	{
@@ -118,10 +119,11 @@ bool media_writer::write_packet(const stream_packet &pkt)
 		} else {
 			bc_avlog(re, "Error writing frame to recording.");
 		}
+		update_last_mux_dts = false;
 		return false;
 	}
 	if (update_last_mux_dts) {
-		last_mux_dts = opkt.dts;
+		last_mux_dts = last_mux_dts_uncommitted;
 	}
 
 	return true;
