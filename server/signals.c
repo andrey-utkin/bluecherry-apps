@@ -12,6 +12,8 @@ static const char * const sig_name[] = {
 	[SIGFPE]  = "Floating point exception",
 };
 
+const char *shutdown_reason = NULL;
+
 static void sighandler(int signum, siginfo_t *info, void *ctx)
 {
 	(void)ctx;
@@ -25,6 +27,13 @@ static void sighandler(int signum, siginfo_t *info, void *ctx)
 	case SIGFPE:
 		bt(sig_name[signum], info->si_addr);
 		_exit(1);
+
+	case SIGINT:
+	case SIGTERM:
+	case SIGQUIT:
+	case SIGHUP:
+		shutdown_reason = "Termination signal received";
+
 	default:
 		/* SIGCHLD */
 		return;
@@ -35,7 +44,7 @@ static void sighandler(int signum, siginfo_t *info, void *ctx)
 
 void signals_setup()
 {
-	const int sig[] = { SIGCHLD, SIGFPE, SIGILL, SIGSEGV, SIGBUS, SIGABRT };
+	const int sig[] = { SIGCHLD, SIGFPE, SIGILL, SIGSEGV, SIGBUS, SIGABRT, SIGINT, SIGTERM, SIGQUIT, SIGHUP };
 	struct sigaction sa;
 
 	memset(&sa, 0, sizeof(sa));
