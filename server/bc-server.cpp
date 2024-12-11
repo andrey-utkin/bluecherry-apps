@@ -139,7 +139,7 @@ static bc_media_files g_media_files;
 #define BC_CLEANUP_RETRY_COUNT	5
 #define BC_CLEANUP_RETRY_SEC	5
 
-extern const char *shutdown_reason = NULL;
+extern const char *shutdown_reason;
 
 void bc_status_component_begin(bc_status_component c)
 {
