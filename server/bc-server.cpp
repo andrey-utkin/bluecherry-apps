@@ -1816,6 +1816,7 @@ int main(int argc, char **argv)
 	}
 
 #ifdef V3_LICENSING
+	v3license_server::stopThread();
 	pthread_join(v3license_thread, NULL);
 #endif /* V3_LICENSING */
 
