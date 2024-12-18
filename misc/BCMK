@@ -35,7 +35,7 @@ libconfig-install: $(libconfig-contrib-dir)/libconfig.so
  ###############
 ###   libav   ###
  ###############
-pkgs += libav
+# pkgs += libav # not needed with bluecherry-ffmpeg package
 
 libav-gitrev = $(shell GIT_DIR=$(TOPDIR)/misc/libav/.git git describe)
 libav-contrib-dir = $(CONTRIB_DIR)/libav/$(libav-gitrev)

@@ -13,6 +13,7 @@ Build-Depends: debhelper (>= 11),
  libidn11-dev, libbsd-dev, yasm, libudev-dev, libopencv-dev,
  libva-dev,
  libcurl4, libcurl4-dev,
+ bluecherry-ffmpeg,
 Standards-Version: 3.9.5
 
 Package: bluecherry
@@ -32,6 +33,7 @@ Depends: ${shlibs:Depends}, ssl-cert, ucf, curl, sysstat,
  rsyslog,
  logrotate,
  libcurl4,
+ bluecherry-ffmpeg,
 # python3-pip,
 #focal   php-sqlite3, php-gd, php-curl, php-mysql
 #jammy   php-sqlite3, php-gd, php-curl, php-mysql
